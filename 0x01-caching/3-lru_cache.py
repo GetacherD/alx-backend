@@ -11,7 +11,7 @@ class LRUCache(BaseCaching):
     def __init__(self):
         """ initialize """
         super().__init__()
-        self.keys_cached = {}  # {key: age}
+        self.keys_cached = {}
 
     def put(self, key, item):
         """ put key to a value """
@@ -24,7 +24,7 @@ class LRUCache(BaseCaching):
             if len(self.cache_data) > self.MAX_ITEMS:
                 mx = 0
                 for k, v in self.keys_cached.items():
-                    if v >= mx:
+                    if v > mx:
                         mx = v
                         discard = k
                 del self.cache_data[discard]
