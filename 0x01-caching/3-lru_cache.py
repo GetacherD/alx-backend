@@ -35,4 +35,7 @@ class LRUCache(BaseCaching):
         """ get cached data """
         if not key:
             return None
-        return self.cache_data.get(key)
+        val = self.cache_data.get(key)
+        if val:
+            self.keys_cached[key] -= 1
+        return val
