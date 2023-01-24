@@ -24,7 +24,7 @@ class LRUCache(BaseCaching):
             if len(self.cache_data) > self.MAX_ITEMS:
                 mx = 0
                 for k, v in self.keys_cached.items():
-                    if v >= mx:
+                    if v > mx:
                         mx = v
                         discard = k
                 del self.cache_data[discard]
@@ -37,5 +37,5 @@ class LRUCache(BaseCaching):
             return None
         val = self.cache_data.get(key)
         if val:
-            self.keys_cached[key] -= 1
+            self.keys_cached[key] = 0
         return val
