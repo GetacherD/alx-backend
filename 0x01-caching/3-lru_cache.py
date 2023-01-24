@@ -38,4 +38,7 @@ class LRUCache(BaseCaching):
         val = self.cache_data.get(key)
         if val:
             self.keys_cached[key] = 0
+            for k in self.cache_data:
+                if k != key:
+                    self.keys_cached[k] += 1
         return val
