@@ -1,8 +1,8 @@
-#!/usr/bin/env python3
+# !/usr/bin/env python3
 """
 LRU Least Recently Used caching
 """
-from sys import maxsize
+from random import choice
 BaseCaching = __import__('base_caching').BaseCaching
 
 
@@ -12,25 +12,43 @@ class LFUCache(BaseCaching):
     def __init__(self):
         """ initialize """
         super().__init__()
-        self.keys = {}
+        self.frequent = {}
+        self.recent = {}
 
     def put(self, key, item):
         """ put key to a value """
+        if key and item and len(self.cache_data) == self.MAX_ITEMS and (
+                key not in self.cache_data):
+            min_val = min(self.frequent.values())
+            discard = []
+            rm_key = None
+            for k, v in self.frequent.items():
+                if v == min_val:
+                    discard.append(k)
+            if len(discard) > 1:
+                min_lru = self.recent[discard[0]]
+                rm_key = discard[0]
+                for k in discard:
+                    if min_lru < self.recent[k]:
+                        min_lru = self.recent[k]
+                        rm_key = k
+            else:
+                rm_key = discard[0]
+            print(f"DISCARD: {rm_key}")
+            del self.frequent[rm_key]
+            del self.recent[rm_key]
+            del self.cache_data[rm_key]
         if key and item:
             if key in self.cache_data:
-                self.keys[key] += 1
+                self.frequent[key] += 1
+                self.recent[key] = 0
             else:
-                self.cache_data[key] = item
-                self.keys[key] = 1
-        if len(self.cache_data) > self.MAX_ITEMS:
-            lst = maxsize
-            for k, v in self.keys.items():
-                if v < lst:
-                    lst = v
-                    discard = k
-            print("DISCARD:", discard)
-            del self.cache_data[discard]
-            del self.keys[discard]
+                self.frequent[key] = 0
+                self.recent[key] = 0
+            for k in self.recent:
+                if k != key:
+                    self.recent[k] += 1
+            self.cache_data[key] = item
 
     def get(self, key):
         """ get cached data """
@@ -38,5 +56,9 @@ class LFUCache(BaseCaching):
             return None
         val = self.cache_data.get(key)
         if val:
-            self.keys[key] += 1
+            self.recent[key] = 0
+            for k in self.recent:
+                if k != key:
+                    self.recent[k] += 1
+            self.frequent[key] += 1
         return val
