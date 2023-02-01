@@ -38,19 +38,16 @@ def get_locale():
 
 def get_user():
     key = request.args.get("login_as")
-    if key and int(key) in list(users.keys()):
-
-        username = users.get(int(key)).get("name")
-    else:
-        username = None
-    return {"username": username}
+    if not key and int(key) not in list(users.keys()):
+        return None
+    return users.get(int(key))
 
 
 @app.before_request
 def before_request():
     g.user = None
     user = get_user()
-    if user.get("username", None):
+    if user:
         g.user = user
 
 
