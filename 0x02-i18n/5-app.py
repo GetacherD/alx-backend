@@ -3,9 +3,9 @@
 flask babel demo i18n
 """
 
-from flask import Flask, g, render_template, request
+from flask import Flask, render_template, request
 from flask_babel import Babel, _
-
+import flask
 
 users = {
     1: {"name": "Balou", "locale": "fr", "timezone": "Europe/Paris"},
@@ -45,10 +45,7 @@ def get_user():
 
 @app.before_request
 def before_request():
-    g.user = None
-    user = get_user()
-    if user:
-        g.user = user
+    flask.g.user = get_user()
 
 
 @app.route("/")
