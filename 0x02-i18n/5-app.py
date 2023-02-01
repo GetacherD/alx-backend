@@ -39,9 +39,10 @@ def get_locale() -> str:
 def get_user() -> Union[dict, None]:
     """ Get user from db (mocked)"""
     key = request.args.get("login_as")
-    if not key and int(key) not in list(users.keys()):
+    try:
+        return users.get(int(key))
+    except Exception:
         return None
-    return users.get(int(key))
 
 
 @app.before_request
