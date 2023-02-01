@@ -50,7 +50,7 @@ def before_request():
     g.user = get_user()
 
 
-@app.route("/", method=["GET"], strict_slashes=False)
+@app.route("/", methods=["GET"], strict_slashes=False)
 def index() -> str:
     """ index page """
     return render_template("5-index.html")
