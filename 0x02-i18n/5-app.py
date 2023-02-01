@@ -3,9 +3,9 @@
 flask babel demo i18n
 """
 
-from flask import Flask, render_template, request
+from flask import Flask, g, render_template, request
 from flask_babel import Babel, _
-import flask
+from typing import Union
 
 users = {
     1: {"name": "Balou", "locale": "fr", "timezone": "Europe/Paris"},
@@ -36,7 +36,7 @@ def get_locale():
     return request.accept_languages.best_match(app.config["LANGUAGES"])
 
 
-def get_user():
+def get_user() -> Union[dict, None]:
     key = request.args.get("login_as")
     if not key and int(key) not in list(users.keys()):
         return None
@@ -45,7 +45,7 @@ def get_user():
 
 @app.before_request
 def before_request():
-    flask.g.user = get_user()
+    g.user = get_user()
 
 
 @app.route("/")
